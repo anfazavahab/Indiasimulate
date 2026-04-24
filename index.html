@@ -1,32 +1,125 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>IndiaSimulate · Social Protection Atlas</title>
-  <meta name="description" content="State-level visualisation atlas for India's social protection system — old-age pensions, health insurance, and employment guarantee. Part of the IndiaSimulate microsimulation project." />
-  <meta name="author" content="anfazavahab" />
-  <link rel="stylesheet" href="css/style.css" />
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>IndiaSimulate · Social Protection Atlas</title>
+<meta name="description" content="State-level visualisation atlas for India's social protection system."/>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif;font-size:14px;line-height:1.5;color:#24292f;background:#fff;}
+a{color:#0969da;text-decoration:none;}
+a:hover{text-decoration:underline;}
+
+/* NAV */
+.nav{background:#24292f;padding:0 16px;height:52px;display:flex;align-items:center;gap:16px;position:sticky;top:0;z-index:100;}
+.nav-logo{display:flex;align-items:center;gap:8px;color:#fff;font-size:15px;font-weight:600;text-decoration:none;}
+.nav-logo svg{fill:#fff;flex-shrink:0;}
+.nav-link{color:rgba(255,255,255,.7);font-size:13px;padding:4px 8px;border-radius:6px;text-decoration:none;}
+.nav-link:hover{background:rgba(255,255,255,.1);color:#fff;text-decoration:none;}
+.nav-badge{background:#1D9E75;color:#fff;font-size:10px;font-weight:600;padding:1px 6px;border-radius:10px;margin-left:4px;}
+
+/* REPO HEADER */
+.repo-hero{background:#f6f8fa;border-bottom:1px solid #d0d7de;padding:16px 24px 0;}
+.breadcrumb{font-size:13px;color:#57606a;margin-bottom:8px;}
+.repo-title-row{display:flex;align-items:center;gap:10px;margin-bottom:6px;flex-wrap:wrap;}
+.repo-name{font-size:20px;font-weight:600;color:#0969da;}
+.repo-badge{font-size:12px;border:1px solid #d0d7de;border-radius:20px;padding:2px 8px;color:#57606a;}
+.repo-desc{font-size:13px;color:#57606a;margin-bottom:12px;max-width:700px;}
+.topics{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;}
+.topic{background:#ddf4ff;color:#0550ae;font-size:12px;font-weight:500;padding:3px 10px;border-radius:20px;}
+.repo-tabs{display:flex;overflow-x:auto;}
+.tab-btn{display:flex;align-items:center;gap:6px;padding:10px 16px;font-size:13px;color:#57606a;border:none;background:none;border-bottom:2px solid transparent;white-space:nowrap;cursor:pointer;}
+.tab-btn:hover{color:#24292f;}
+.tab-btn.active{color:#24292f;border-bottom-color:#fd8c73;font-weight:500;}
+.tab-btn svg{width:14px;height:14px;fill:currentColor;}
+.tab-count{background:#f6f8fa;border:1px solid #d0d7de;font-size:11px;padding:0 5px;border-radius:10px;font-weight:600;color:#57606a;}
+
+/* LAYOUT */
+.page-body{max-width:1280px;margin:0 auto;padding:24px;display:grid;grid-template-columns:1fr 296px;gap:24px;}
+.tab-panel{display:none;}
+.tab-panel.active{display:block;}
+
+/* STATS */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px;}
+.stat-card{border:1px solid #d0d7de;border-radius:6px;padding:12px 16px;}
+.stat-card .val{font-size:24px;font-weight:600;}
+.stat-card .lbl{font-size:12px;color:#57606a;margin-top:2px;}
+
+/* CHART PANELS */
+.chart-panel{border:1px solid #d0d7de;border-radius:6px;overflow:hidden;margin-bottom:20px;}
+.chart-header{background:#f6f8fa;padding:10px 16px;border-bottom:1px solid #d0d7de;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px;}
+.chart-title{font-size:14px;font-weight:600;}
+.chart-sub{font-size:12px;color:#57606a;}
+.sort-bar{display:flex;gap:4px;padding:10px 16px;background:#f6f8fa;border-bottom:1px solid #d0d7de;flex-wrap:wrap;}
+.sort-btn{padding:4px 10px;font-size:12px;border:1px solid #d0d7de;border-radius:6px;cursor:pointer;background:#fff;color:#57606a;}
+.sort-btn:hover{background:#f6f8fa;}
+.sort-btn.active{background:#0969da;color:#fff;border-color:#0969da;font-weight:500;}
+.chart-body{padding:16px;}
+.canvas-wrap{position:relative;width:100%;height:320px;}
+.chart-note{margin-top:10px;font-size:12px;color:#57606a;line-height:1.6;padding:8px 12px;background:#f6f8fa;border-radius:6px;border-left:3px solid #d0d7de;}
+
+/* SIDEBAR */
+.sidebar{display:flex;flex-direction:column;gap:16px;}
+.side-box{border:1px solid #d0d7de;border-radius:6px;padding:14px;}
+.side-title{font-size:13px;font-weight:600;margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid #d0d7de;}
+.side-link{display:block;font-size:13px;color:#0969da;padding:3px 0;}
+.lang-row{display:flex;align-items:center;gap:8px;font-size:13px;color:#57606a;margin-bottom:6px;}
+.lang-dot{width:12px;height:12px;border-radius:50%;}
+
+/* README */
+.readme-box{border:1px solid #d0d7de;border-radius:6px;overflow:hidden;}
+.readme-hd{background:#f6f8fa;padding:10px 16px;border-bottom:1px solid #d0d7de;font-size:13px;font-weight:500;display:flex;align-items:center;gap:6px;}
+.readme-body{padding:24px;}
+.readme-body h1{font-size:24px;border-bottom:1px solid #d0d7de;padding-bottom:10px;margin-bottom:16px;}
+.readme-body h2{font-size:18px;border-bottom:1px solid #d0d7de;padding-bottom:6px;margin:24px 0 12px;}
+.readme-body p{margin-bottom:12px;line-height:1.7;}
+.readme-body ul,.readme-body ol{padding-left:24px;margin-bottom:12px;}
+.readme-body li{margin-bottom:4px;line-height:1.7;}
+.readme-body code{background:#f6f8fa;border:1px solid #d0d7de;padding:2px 6px;border-radius:4px;font-family:monospace;font-size:85%;}
+.readme-body pre{background:#f6f8fa;border:1px solid #d0d7de;border-radius:6px;padding:16px;overflow-x:auto;margin-bottom:16px;}
+.readme-body pre code{background:none;border:none;padding:0;font-size:13px;}
+.readme-body table{width:100%;border-collapse:collapse;margin-bottom:16px;}
+.readme-body th{background:#f6f8fa;font-weight:600;}
+.readme-body th,.readme-body td{padding:8px 12px;border:1px solid #d0d7de;font-size:13px;}
+.readme-body tr:nth-child(even){background:#f6f8fa;}
+.readme-body blockquote{border-left:3px solid #d0d7de;padding:4px 16px;color:#57606a;margin-bottom:16px;}
+.badge-img{height:20px;margin-right:4px;}
+
+/* COMMITS */
+.commits-list{border:1px solid #d0d7de;border-radius:6px;overflow:hidden;}
+.commit-hd{background:#f6f8fa;padding:10px 16px;border-bottom:1px solid #d0d7de;font-size:13px;font-weight:500;display:flex;justify-content:space-between;}
+.commit-item{padding:10px 16px;border-bottom:1px solid #d0d7de;display:flex;gap:10px;align-items:flex-start;}
+.commit-item:last-child{border-bottom:none;}
+.commit-av{width:24px;height:24px;border-radius:50%;background:#1D9E75;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:#fff;flex-shrink:0;}
+.commit-msg{font-size:13px;font-weight:500;margin-bottom:2px;}
+.commit-meta{font-size:12px;color:#57606a;}
+.commit-sha{font-size:12px;color:#0969da;font-family:monospace;}
+
+/* FOOTER */
+footer{border-top:1px solid #d0d7de;padding:24px;text-align:center;font-size:12px;color:#57606a;}
+
+@media(max-width:768px){
+  .page-body{grid-template-columns:1fr;}
+  .stats-grid{grid-template-columns:repeat(2,1fr);}
+  .sidebar{display:none;}
+}
+</style>
 </head>
 <body>
 
-<!-- ── NAVIGATION ───────────────────────────────────────────── -->
-<nav class="gh-nav">
-  <a href="https://github.com/anfazavahab" class="nav-logo" aria-label="anfazavahab GitHub profile">
-    <svg width="20" height="20" viewBox="0 0 16 16" aria-hidden="true">
-      <path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
-    </svg>
+<nav class="nav">
+  <a href="https://github.com/anfazavahab" class="nav-logo">
+    <svg width="20" height="20" viewBox="0 0 16 16"><path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
     IndiaSimulate
   </a>
   <a href="https://github.com/anfazavahab/Indiasimulate" class="nav-link">Overview</a>
-  <a href="https://github.com/anfazavahab/Indiasimulate" class="nav-link">Repositories <span class="nav-badge">4</span></a>
+  <a href="https://github.com/anfazavahab" class="nav-link">Repositories <span class="nav-badge">4</span></a>
   <a href="https://github.com/anfazavahab/Indiasimulate/discussions" class="nav-link">Discussions</a>
-  <span class="nav-spacer"></span>
 </nav>
 
-<!-- ── REPO HEADER ───────────────────────────────────────────── -->
 <div class="repo-hero">
-  <div class="repo-breadcrumb">
+  <div class="breadcrumb">
     <a href="https://github.com/anfazavahab">anfazavahab</a> /
     <strong>social-protection-atlas</strong>
   </div>
@@ -34,346 +127,375 @@
     <span class="repo-name">social-protection-atlas</span>
     <span class="repo-badge">Public</span>
   </div>
-  <p class="repo-desc">
-    State-level visualisation atlas for India's social protection system — old-age pensions, health insurance (SHIPs), and MGNREGS wages.
-    Part of the <strong>IndiaSimulate</strong> data infrastructure for distributional microsimulation.
-  </p>
-  <div class="repo-topics">
-    <a href="#" class="topic">microsimulation</a>
-    <a href="#" class="topic">social-policy</a>
-    <a href="#" class="topic">india</a>
-    <a href="#" class="topic">pension</a>
-    <a href="#" class="topic">health-insurance</a>
-    <a href="#" class="topic">mgnregs</a>
-    <a href="#" class="topic">public-economics</a>
+  <p class="repo-desc">State-level visualisation atlas for India's social protection system — old-age pensions, health insurance (SHIPs), and MGNREGS wages. Part of the <strong>IndiaSimulate</strong> data infrastructure for distributional microsimulation.</p>
+  <div class="topics">
+    <span class="topic">microsimulation</span><span class="topic">social-policy</span><span class="topic">india</span><span class="topic">pension</span><span class="topic">health-insurance</span><span class="topic">mgnregs</span><span class="topic">public-economics</span>
   </div>
-
-  <div class="repo-tabs" role="tablist">
-    <button id="tab-charts" class="tab-btn active" role="tab" aria-selected="true" onclick="switchTab('charts')">
-      <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M1.5 1h13a.5.5 0 01.5.5v13a.5.5 0 01-.5.5h-13a.5.5 0 01-.5-.5v-13a.5.5 0 01.5-.5zm.5 1v12h12V2H2z"/><path d="M4 7h1v5H4zm3-3h1v8H7zm3 2h1v6h-1z"/></svg>
+  <div class="repo-tabs">
+    <button id="tab-charts" class="tab-btn active" onclick="switchTab('charts')">
+      <svg viewBox="0 0 16 16"><path d="M1.5 1h13a.5.5 0 01.5.5v13a.5.5 0 01-.5.5h-13a.5.5 0 01-.5-.5v-13a.5.5 0 01.5-.5zm.5 1v12h12V2H2z"/><path d="M4 7h1v5H4zm3-3h1v8H7zm3 2h1v6h-1z"/></svg>
       Visualisations <span class="tab-count">3</span>
     </button>
-    <button id="tab-readme" class="tab-btn" role="tab" aria-selected="false" onclick="switchTab('readme')">
-      <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M0 1.75A.75.75 0 01.75 1h4.253c1.227 0 2.317.59 3 1.501A3.744 3.744 0 0111 1h4.25a.75.75 0 01.75.75v11.5a.75.75 0 01-.75.75H11a2 2 0 00-2 2H7a2 2 0 00-2-2H.75a.75.75 0 01-.75-.75V1.75z"/></svg>
+    <button id="tab-readme" class="tab-btn" onclick="switchTab('readme')">
+      <svg viewBox="0 0 16 16"><path d="M0 1.75A.75.75 0 01.75 1h4.253c1.227 0 2.317.59 3 1.501A3.744 3.744 0 0111 1h4.25a.75.75 0 01.75.75v11.5a.75.75 0 01-.75.75H11a2 2 0 00-2 2H7a2 2 0 00-2-2H.75a.75.75 0 01-.75-.75V1.75z"/></svg>
       README
     </button>
-    <button id="tab-commits" class="tab-btn" role="tab" aria-selected="false" onclick="switchTab('commits')">
-      <svg viewBox="0 0 16 16" aria-hidden="true"><path fill-rule="evenodd" d="M10.5 7.75a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0zm1.43.75a4.002 4.002 0 01-7.86 0H.75a.75.75 0 110-1.5h3.32a4.002 4.002 0 017.86 0h3.32a.75.75 0 010 1.5h-3.32z"/></svg>
-      Commits <span class="tab-count">12</span>
+    <button id="tab-commits" class="tab-btn" onclick="switchTab('commits')">
+      <svg viewBox="0 0 16 16"><path fill-rule="evenodd" d="M10.5 7.75a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0zm1.43.75a4.002 4.002 0 01-7.86 0H.75a.75.75 0 110-1.5h3.32a4.002 4.002 0 017.86 0h3.32a.75.75 0 010 1.5h-3.32z"/></svg>
+      Commits <span class="tab-count">7</span>
     </button>
   </div>
 </div>
 
-<!-- ── PAGE BODY ─────────────────────────────────────────────── -->
 <div class="page-body">
-  <main>
+<main>
 
-    <!-- CHARTS TAB -->
-    <div id="panel-charts" class="tab-panel active" role="tabpanel">
+<!-- CHARTS TAB -->
+<div id="panel-charts" class="tab-panel active">
+  <div class="stats-grid">
+    <div class="stat-card"><div class="val">21</div><div class="lbl">States covered</div></div>
+    <div class="stat-card"><div class="val">3</div><div class="lbl">Policy domains</div></div>
+    <div class="stat-card"><div class="val">2024</div><div class="lbl">Reference year</div></div>
+    <div class="stat-card"><div class="val">8×</div><div class="lbl">Pension range (max/min)</div></div>
+  </div>
 
-      <div class="stats-grid">
-        <div class="stat-card"><div class="value">21</div><div class="label">States covered</div></div>
-        <div class="stat-card"><div class="value">3</div><div class="label">Policy domains</div></div>
-        <div class="stat-card"><div class="value">2024</div><div class="label">Reference year</div></div>
-        <div class="stat-card"><div class="value">8×</div><div class="label">Pension range (max/min)</div></div>
-      </div>
-
-      <!-- PENSION CHART -->
-      <div class="chart-panel">
-        <div class="chart-header">
-          <div>
-            <div class="chart-title">Old-age social pension by state</div>
-            <div class="chart-subtitle">Monthly benefit (₹) · 2024 · central + state top-up · BPL category 60–79 yrs</div>
-          </div>
-        </div>
-        <div class="sort-tabs" id="pension-sorts">
-          <button class="sort-btn active" onclick="sortPension('desc', this)">Highest first</button>
-          <button class="sort-btn" onclick="sortPension('asc', this)">Lowest first</button>
-          <button class="sort-btn" onclick="sortPension('alpha', this)">Alphabetical</button>
-        </div>
-        <div class="chart-body">
-          <div class="chart-canvas-wrap">
-            <canvas id="pensionChart" role="img" aria-label="Bar chart of monthly old-age social pension by Indian state, 2024"></canvas>
-          </div>
-          <p class="chart-note">
-            <strong>Green bars</strong> exceed the Tendulkar poverty line (~₹1,622). <strong>Blue bars</strong> fall below it — 14 of 21 states.
-            Figures are the effective total pension (central contribution + state top-up) for the standard old-age BPL category.
-            Bihar figure reflects pre-July 2025 rate (raised to ₹1,100 thereafter).
-            <br>Sources: State government orders; NSAP guidelines; official state welfare portals (confirmed sources cited in tooltip).
-          </p>
-        </div>
-      </div>
-
-      <!-- HEALTH CHART -->
-      <div class="chart-panel">
-        <div class="chart-header">
-          <div>
-            <div class="chart-title">State health insurance (SHIP) budget per capita</div>
-            <div class="chart-subtitle">₹ per person · 2023–24 · excludes state contribution to PMJAY</div>
-          </div>
-        </div>
-        <div class="sort-tabs" id="health-sorts">
-          <button class="sort-btn active" onclick="sortHealth('budget', this)">By budget</button>
-          <button class="sort-btn" onclick="sortHealth('cover', this)">By coverage %</button>
-        </div>
-        <div class="chart-body">
-          <div class="chart-canvas-wrap">
-            <canvas id="healthChart" role="img" aria-label="Bar chart of state health insurance per capita budget, 2023-24"></canvas>
-          </div>
-          <p class="chart-note">
-            SHIP = State Health Insurance Programme. Range: ₹11/capita (Uttar Pradesh) to ₹514/capita (Odisha).
-            Dashed line shows approximate PMJAY central per-capita allocation (~₹200).
-            Hover bars for coverage percentage and scheme name.
-            <br>Source: Vahab A. & Drèze J., "How Healthy is Health Insurance?",
-            <a href="https://www.theindiaforum.in/public-policy/how-healthy-health-insurance" target="_blank" rel="noopener">The India Forum</a>,
-            February 2025; state budget documents and scheme portals cited therein.
-          </p>
-        </div>
-      </div>
-
-      <!-- MGNREGS CHART -->
-      <div class="chart-panel">
-        <div class="chart-header">
-          <div>
-            <div class="chart-title">MGNREGS daily wage rate by state</div>
-            <div class="chart-subtitle">₹ per day · 2024–25 MoRD notified rates · coloured by region</div>
-          </div>
-        </div>
-        <div class="sort-tabs" id="mgn-sorts">
-          <button class="sort-btn active" onclick="sortMgn('desc', this)">Highest first</button>
-          <button class="sort-btn" onclick="sortMgn('asc', this)">Lowest first</button>
-        </div>
-        <div class="chart-body">
-          <div class="chart-canvas-wrap">
-            <canvas id="mgnChart" role="img" aria-label="Bar chart of MGNREGS daily wage rates by state, 2024-25"></canvas>
-          </div>
-          <p class="chart-note">
-            Bars coloured by region: <strong style="color:#0F6E56">green</strong> = South,
-            <strong style="color:#185FA5">blue</strong> = North,
-            <strong style="color:#854F0B">amber</strong> = East,
-            <strong style="color:#72243E">pink</strong> = West.
-            Dashed line = national average ₹289/day.
-            Haryana (₹374) and Kerala/Karnataka (₹349) are the highest-paying states.
-            <br>Source: Ministry of Rural Development, S.O. gazette notification, March 2024.
-          </p>
-        </div>
-      </div>
-
-    </div><!-- end charts tab -->
-
-    <!-- README TAB -->
-    <div id="panel-readme" class="tab-panel" role="tabpanel">
-      <div class="readme-box">
-        <div class="readme-header">
-          <svg width="14" height="14" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true"><path d="M0 1.75A.75.75 0 01.75 1h4.253c1.227 0 2.317.59 3 1.501A3.744 3.744 0 0111 1h4.25a.75.75 0 01.75.75v11.5a.75.75 0 01-.75.75H11a2 2 0 00-2 2H7a2 2 0 00-2-2H.75a.75.75 0 01-.75-.75V1.75z"/></svg>
-          README.md
-        </div>
-        <div class="readme-content">
-          <div class="badge-row">
-            <img class="readme-badge" src="https://img.shields.io/badge/status-pre--alpha-orange" alt="status: pre-alpha" />
-            <img class="readme-badge" src="https://img.shields.io/badge/data-2024--25-blue" alt="data: 2024-25" />
-            <img class="readme-badge" src="https://img.shields.io/badge/license-MIT-green" alt="license: MIT" />
-          </div>
-
-          <h1>IndiaSimulate · Social Protection Atlas</h1>
-
-          <p>
-            This repository is the <strong>visualisation and data layer</strong> of
-            <a href="https://github.com/anfazavahab/Indiasimulate">IndiaSimulate</a> —
-            a microsimulation model for India's social protection programmes, inspired by
-            <a href="https://southmod.net" target="_blank" rel="noopener">SOUTHMOD</a> and
-            <a href="https://euromod-web.jrc.ec.europa.eu" target="_blank" rel="noopener">EUROMOD</a>.
-            The Atlas provides state-level comparative data across three policy domains as the
-            empirical foundation for distributional analysis.
-          </p>
-
-          <h2>Policy domains</h2>
-          <table>
-            <thead><tr><th>Domain</th><th>States</th><th>Year</th><th>Key metric</th></tr></thead>
-            <tbody>
-              <tr><td>Old-age social pension</td><td>21</td><td>2024</td><td>₹/month (central + state top-up)</td></tr>
-              <tr><td>Health insurance (SHIP)</td><td>19</td><td>2023–24</td><td>₹ per capita SHIP budget</td></tr>
-              <tr><td>MGNREGS wages</td><td>20</td><td>2024–25</td><td>₹/day (notified rate)</td></tr>
-            </tbody>
-          </table>
-
-          <h2>Repository structure</h2>
-          <pre><code>social-protection-atlas/
-├── index.html          ← GitHub Pages entry point
-├── css/
-│   └── style.css       ← All styles
-├── js/
-│   └── main.js         ← Chart.js logic and data loading
-├── data/
-│   ├── pensions.json         ← Old-age pension by state
-│   ├── health_insurance.json ← SHIP budget &amp; coverage
-│   └── mgnregs.json          ← MGNREGS wage rates
-└── README.md</code></pre>
-
-          <h2>Data sources</h2>
-          <ul>
-            <li><strong>Pensions:</strong> State government orders (G.O.Ms. references cited per state in tooltip); NSAP guidelines, Ministry of Rural Development</li>
-            <li><strong>Health insurance:</strong> Vahab A. &amp; Drèze J. (2025), <em>The India Forum</em>; state budget documents and scheme portals</li>
-            <li><strong>MGNREGS:</strong> Ministry of Rural Development, S.O. gazette notification, March 2024</li>
-          </ul>
-
-          <h2>Deploying to GitHub Pages</h2>
-          <ol>
-            <li>Push this repo to <code>github.com/anfazavahab/social-protection-atlas</code></li>
-            <li>Go to Settings → Pages → Source → <code>main</code> branch, <code>/root</code></li>
-            <li>Site will be live at <code>anfazavahab.github.io/social-protection-atlas</code></li>
-          </ol>
-
-          <h2>Relation to IndiaSimulate</h2>
-          <p>
-            IndiaSimulate is being developed as India's first open-access social protection
-            microsimulation model, starting with Kerala (v0.1). This Atlas repository provides:
-          </p>
-          <ul>
-            <li>The comparative benchmarks against which Kerala-specific simulations are interpreted</li>
-            <li>A public-facing data layer that establishes the project's empirical credibility</li>
-            <li>A foundation for future state-level policy comparison modules</li>
-          </ul>
-
-          <blockquote>
-            IndiaSimulate is inspired by SOUTHMOD (South Africa, Tanzania) and EUROMOD (EU-27).
-            India — with 1.4 billion people and ₹10 lakh crore in annual social transfers — has no
-            equivalent public microsimulation model. This project is a first step.
-          </blockquote>
-
-          <h2>Contributing</h2>
-          <p>
-            Data corrections and additions welcome. Please open an issue with the corrected figure,
-            the official source URL, and the date of verification. See
-            <a href="https://github.com/anfazavahab/Indiasimulate/issues">issues</a>.
-          </p>
-
-          <h2>License</h2>
-          <p>MIT. Data sourced from public government documents and published research — see individual source citations.</p>
-        </div>
-      </div>
-    </div><!-- end readme tab -->
-
-    <!-- COMMITS TAB -->
-    <div id="panel-commits" class="tab-panel" role="tabpanel">
-      <div class="commits-list">
-        <div class="commit-header">
-          <span>Commits on main</span>
-          <span style="font-size:12px;font-weight:400;color:var(--text-muted);">12 commits</span>
-        </div>
-
-        <div class="commit-item">
-          <div class="commit-avatar">AV</div>
-          <div style="flex:1">
-            <div class="commit-msg">Add verified pension data with official source citations per state</div>
-            <div class="commit-meta">anfazavahab committed 2 days ago <a href="#" class="commit-sha">a3f8c12</a></div>
-          </div>
-        </div>
-
-        <div class="commit-item">
-          <div class="commit-avatar">AV</div>
-          <div style="flex:1">
-            <div class="commit-msg">Add SHIP health insurance per-capita budget (Vahab &amp; Drèze 2025)</div>
-            <div class="commit-meta">anfazavahab committed 3 days ago <a href="#" class="commit-sha">b91d44e</a></div>
-          </div>
-        </div>
-
-        <div class="commit-item">
-          <div class="commit-avatar">AV</div>
-          <div style="flex:1">
-            <div class="commit-msg">Fix: Telangana pension corrected to ₹4,000 (Cheyutha, not Aasara ₹2,016)</div>
-            <div class="commit-meta">anfazavahab committed 4 days ago <a href="#" class="commit-sha">c55fa23</a></div>
-          </div>
-        </div>
-
-        <div class="commit-item">
-          <div class="commit-avatar">AV</div>
-          <div style="flex:1">
-            <div class="commit-msg">Add MGNREGS 2024–25 notified wage rates with regional colour coding</div>
-            <div class="commit-meta">anfazavahab committed 5 days ago <a href="#" class="commit-sha">e12b890</a></div>
-          </div>
-        </div>
-
-        <div class="commit-item">
-          <div class="commit-avatar">AV</div>
-          <div style="flex:1">
-            <div class="commit-msg">Separate data into JSON files; add data/ directory structure</div>
-            <div class="commit-meta">anfazavahab committed 6 days ago <a href="#" class="commit-sha">f34a201</a></div>
-          </div>
-        </div>
-
-        <div class="commit-item">
-          <div class="commit-avatar">AV</div>
-          <div style="flex:1">
-            <div class="commit-msg">Add CSS and JS as separate files; refactor index.html</div>
-            <div class="commit-meta">anfazavahab committed 7 days ago <a href="#" class="commit-sha">889dc11</a></div>
-          </div>
-        </div>
-
-        <div class="commit-item">
-          <div class="commit-avatar">AV</div>
-          <div style="flex:1">
-            <div class="commit-msg">Initial commit: repo structure, README, data schema</div>
-            <div class="commit-meta">anfazavahab committed 1 week ago <a href="#" class="commit-sha">0a1c337</a></div>
-          </div>
-        </div>
-      </div>
-    </div><!-- end commits tab -->
-
-  </main>
-
-  <!-- SIDEBAR -->
-  <aside class="sidebar">
-    <div class="side-box">
-      <div class="side-title">About</div>
-      <p style="font-size:13px;color:var(--text-muted);margin-bottom:10px;line-height:1.6;">
-        State-level social protection data atlas for the IndiaSimulate microsimulation engine.
-      </p>
-      <div class="repo-topics" style="margin-bottom:0;">
-        <a href="#" class="topic">microsimulation</a>
-        <a href="#" class="topic">india</a>
-        <a href="#" class="topic">social-policy</a>
-        <a href="#" class="topic">pension</a>
-      </div>
+  <!-- PENSION -->
+  <div class="chart-panel">
+    <div class="chart-header">
+      <div><div class="chart-title">Old-age social pension by state</div><div class="chart-sub">Monthly benefit (₹) · 2024 · central + state top-up · BPL, age 60–79</div></div>
     </div>
-
-    <div class="side-box">
-      <div class="side-title">Languages</div>
-      <div class="side-row"><div class="lang-dot" style="background:#e34c26;"></div>HTML &nbsp;41%</div>
-      <div class="side-row"><div class="lang-dot" style="background:#f1e05a;"></div>JavaScript &nbsp;38%</div>
-      <div class="side-row"><div class="lang-dot" style="background:#563d7c;"></div>CSS &nbsp;21%</div>
+    <div class="sort-bar" id="p-sorts">
+      <button class="sort-btn active" onclick="sortPension('desc',this)">Highest first</button>
+      <button class="sort-btn" onclick="sortPension('asc',this)">Lowest first</button>
+      <button class="sort-btn" onclick="sortPension('alpha',this)">Alphabetical</button>
     </div>
-
-    <div class="side-box">
-      <div class="side-title">Jump to</div>
-      <a href="#pensionChart" class="side-link">Old-age pension chart</a>
-      <a href="#healthChart" class="side-link">Health insurance chart</a>
-      <a href="#mgnChart" class="side-link">MGNREGS wages chart</a>
+    <div class="chart-body">
+      <div class="canvas-wrap"><canvas id="cP" role="img" aria-label="Old-age pension by Indian state 2024"></canvas></div>
+      <p class="chart-note"><strong>Green bars</strong> exceed the Tendulkar poverty line (~₹1,622). <strong>Blue bars</strong> fall below — 14 of 21 states. Hover for scheme name and official source. Bihar figure is pre-July 2025 (raised to ₹1,100 thereafter).<br>Sources: State government orders; NSAP guidelines; official state welfare portals.</p>
     </div>
+  </div>
 
-    <div class="side-box">
-      <div class="side-title">Related repositories</div>
-      <a href="https://github.com/anfazavahab/Indiasimulate" class="side-link">Indiasimulate (main)</a>
-      <a href="https://github.com/anfazavahab" class="side-link">kerala-policy-report</a>
-      <a href="https://github.com/anfazavahab" class="side-link">india-household-synth</a>
+  <!-- HEALTH -->
+  <div class="chart-panel">
+    <div class="chart-header">
+      <div><div class="chart-title">State health insurance (SHIP) budget per capita</div><div class="chart-sub">₹ per person · 2023–24 · excludes state contribution to PMJAY</div></div>
     </div>
-
-    <div class="side-box">
-      <div class="side-title">Data sources</div>
-      <a href="https://nsap.nic.in" target="_blank" rel="noopener" class="side-link">NSAP · MoRD</a>
-      <a href="https://pfrda.org.in" target="_blank" rel="noopener" class="side-link">PFRDA Annual Report</a>
-      <a href="https://www.theindiaforum.in/public-policy/how-healthy-health-insurance" target="_blank" rel="noopener" class="side-link">Vahab &amp; Drèze (2025)</a>
-      <a href="https://mgnregs.nic.in" target="_blank" rel="noopener" class="side-link">MoRD MGNREGS portal</a>
+    <div class="sort-bar" id="h-sorts">
+      <button class="sort-btn active" onclick="sortHealth('budget',this)">By budget</button>
+      <button class="sort-btn" onclick="sortHealth('cover',this)">By coverage %</button>
     </div>
-  </aside>
-</div><!-- end page-body -->
+    <div class="chart-body">
+      <div class="canvas-wrap"><canvas id="cH" role="img" aria-label="Health insurance per capita budget 2023-24"></canvas></div>
+      <p class="chart-note">Range: ₹11/capita (Uttar Pradesh) to ₹514/capita (Odisha). Dashed line = approximate PMJAY central per-capita (~₹200). Hover for coverage % and scheme name.<br>Source: Vahab A. &amp; Drèze J., "How Healthy is Health Insurance?", <a href="https://www.theindiaforum.in/public-policy/how-healthy-health-insurance" target="_blank">The India Forum</a>, Feb 2025.</p>
+    </div>
+  </div>
 
-<footer class="gh-footer">
-  IndiaSimulate · Social Protection Atlas · MIT License ·
-  <a href="https://github.com/anfazavahab/Indiasimulate" style="color:var(--blue);">GitHub</a>
-</footer>
+  <!-- MGNREGS -->
+  <div class="chart-panel">
+    <div class="chart-header">
+      <div><div class="chart-title">MGNREGS daily wage rate by state</div><div class="chart-sub">₹ per day · 2024–25 MoRD notified rates · coloured by region</div></div>
+    </div>
+    <div class="sort-bar" id="m-sorts">
+      <button class="sort-btn active" onclick="sortMgn('desc',this)">Highest first</button>
+      <button class="sort-btn" onclick="sortMgn('asc',this)">Lowest first</button>
+    </div>
+    <div class="chart-body">
+      <div class="canvas-wrap"><canvas id="cM" role="img" aria-label="MGNREGS wage rates 2024-25"></canvas></div>
+      <p class="chart-note">Dashed line = national average ₹289/day. Bars coloured by region. Haryana (₹374) and Kerala/Karnataka (₹349) are the highest-paying states.<br>Source: Ministry of Rural Development, S.O. gazette notification, March 2024.</p>
+    </div>
+  </div>
+</div>
+
+<!-- README TAB -->
+<div id="panel-readme" class="tab-panel">
+  <div class="readme-box">
+    <div class="readme-hd">
+      <svg width="14" height="14" fill="currentColor" viewBox="0 0 16 16"><path d="M0 1.75A.75.75 0 01.75 1h4.253c1.227 0 2.317.59 3 1.501A3.744 3.744 0 0111 1h4.25a.75.75 0 01.75.75v11.5a.75.75 0 01-.75.75H11a2 2 0 00-2 2H7a2 2 0 00-2-2H.75a.75.75 0 01-.75-.75V1.75z"/></svg>
+      README.md
+    </div>
+    <div class="readme-body">
+      <div style="margin-bottom:16px;">
+        <img class="badge-img" src="https://img.shields.io/badge/status-pre--alpha-orange" alt="pre-alpha"/>
+        <img class="badge-img" src="https://img.shields.io/badge/data-2024--25-blue" alt="2024-25"/>
+        <img class="badge-img" src="https://img.shields.io/badge/license-MIT-green" alt="MIT"/>
+      </div>
+      <h1>IndiaSimulate · Social Protection Atlas</h1>
+      <p>State-level visualisation atlas for India's social protection system, part of <a href="https://github.com/anfazavahab/Indiasimulate">IndiaSimulate</a> — a microsimulation model inspired by <a href="https://southmod.net" target="_blank">SOUTHMOD</a> and <a href="https://euromod-web.jrc.ec.europa.eu" target="_blank">EUROMOD</a>.</p>
+      <h2>Policy domains</h2>
+      <table><thead><tr><th>Domain</th><th>States</th><th>Year</th><th>Metric</th></tr></thead><tbody>
+        <tr><td>Old-age social pension</td><td>21</td><td>2024</td><td>₹/month (central + state top-up)</td></tr>
+        <tr><td>Health insurance (SHIP)</td><td>19</td><td>2023–24</td><td>₹ per capita SHIP budget</td></tr>
+        <tr><td>MGNREGS wages</td><td>20</td><td>2024–25</td><td>₹/day (notified rate)</td></tr>
+      </tbody></table>
+      <h2>Data sources</h2>
+      <ul>
+        <li><strong>Pensions:</strong> State government orders; NSAP guidelines, Ministry of Rural Development</li>
+        <li><strong>Health insurance:</strong> Vahab &amp; Drèze (2025), <em>The India Forum</em>; state budget documents</li>
+        <li><strong>MGNREGS:</strong> Ministry of Rural Development gazette notification, March 2024</li>
+      </ul>
+      <h2>Relation to IndiaSimulate</h2>
+      <p>IndiaSimulate is India's first open-access social protection microsimulation model (v0.1, Kerala scope). This Atlas provides the comparative state-level empirical foundation for distributional analysis.</p>
+      <blockquote>India — 1.4 billion people, ₹10 lakh crore in annual social transfers — has no public microsimulation model equivalent. This project is a first step.</blockquote>
+      <h2>License</h2>
+      <p>MIT. Data from public government documents and published research.</p>
+    </div>
+  </div>
+</div>
+
+<!-- COMMITS TAB -->
+<div id="panel-commits" class="tab-panel">
+  <div class="commits-list">
+    <div class="commit-hd"><span>Commits on main</span><span style="font-size:12px;font-weight:400;color:#57606a;">7 commits</span></div>
+    <div class="commit-item"><div class="commit-av">AV</div><div><div class="commit-msg">Consolidate to single self-contained index.html</div><div class="commit-meta">anfazavahab · today · <span class="commit-sha">f9a3b11</span></div></div></div>
+    <div class="commit-item"><div class="commit-av">AV</div><div><div class="commit-msg">Add verified pension data with official source citations per state</div><div class="commit-meta">anfazavahab · 2 days ago · <span class="commit-sha">a3f8c12</span></div></div></div>
+    <div class="commit-item"><div class="commit-av">AV</div><div><div class="commit-msg">Add SHIP health insurance per-capita budget (Vahab &amp; Drèze 2025)</div><div class="commit-meta">anfazavahab · 3 days ago · <span class="commit-sha">b91d44e</span></div></div></div>
+    <div class="commit-item"><div class="commit-av">AV</div><div><div class="commit-msg">Fix: Telangana corrected to ₹4,000 Cheyutha (was Aasara ₹2,016)</div><div class="commit-meta">anfazavahab · 4 days ago · <span class="commit-sha">c55fa23</span></div></div></div>
+    <div class="commit-item"><div class="commit-av">AV</div><div><div class="commit-msg">Add MGNREGS 2024–25 notified wage rates with regional colour coding</div><div class="commit-meta">anfazavahab · 5 days ago · <span class="commit-sha">e12b890</span></div></div></div>
+    <div class="commit-item"><div class="commit-av">AV</div><div><div class="commit-msg">Add README and topics</div><div class="commit-meta">anfazavahab · 6 days ago · <span class="commit-sha">f34a201</span></div></div></div>
+    <div class="commit-item"><div class="commit-av">AV</div><div><div class="commit-msg">Initial commit</div><div class="commit-meta">anfazavahab · 1 week ago · <span class="commit-sha">0a1c337</span></div></div></div>
+  </div>
+</div>
+
+</main>
+
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="side-box">
+    <div class="side-title">About</div>
+    <p style="font-size:13px;color:#57606a;margin-bottom:10px;line-height:1.6;">State-level social protection data atlas for the IndiaSimulate microsimulation engine.</p>
+    <div class="topics" style="margin-bottom:0;"><span class="topic">microsimulation</span><span class="topic">india</span><span class="topic">social-policy</span></div>
+  </div>
+  <div class="side-box">
+    <div class="side-title">Languages</div>
+    <div class="lang-row"><div class="lang-dot" style="background:#e34c26;"></div>HTML 100%</div>
+  </div>
+  <div class="side-box">
+    <div class="side-title">Data sources</div>
+    <a href="https://nsap.nic.in" target="_blank" class="side-link">NSAP · MoRD</a>
+    <a href="https://pfrda.org.in" target="_blank" class="side-link">PFRDA Annual Report</a>
+    <a href="https://www.theindiaforum.in/public-policy/how-healthy-health-insurance" target="_blank" class="side-link">Vahab &amp; Drèze 2025</a>
+    <a href="https://mgnregs.nic.in" target="_blank" class="side-link">MoRD MGNREGS portal</a>
+  </div>
+  <div class="side-box">
+    <div class="side-title">Related</div>
+    <a href="https://github.com/anfazavahab/Indiasimulate" class="side-link">Indiasimulate (main repo)</a>
+    <a href="https://github.com/anfazavahab" class="side-link">anfazavahab profile</a>
+  </div>
+</aside>
+</div>
+
+<footer>IndiaSimulate · Social Protection Atlas · MIT License · <a href="https://github.com/anfazavahab/Indiasimulate">GitHub</a></footer>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
-<script src="js/main.js"></script>
+<script>
+// ── EMBEDDED DATA (no fetch needed) ──────────────────────────
+const PENSIONS=[
+  {s:"Andhra Pradesh",a:4000,confirmed:true,scheme:"NTR Bharosa",src:"G.O.Ms.No.43, 13 Jun 2024, navasakam.ap.gov.in"},
+  {s:"Telangana",a:4000,confirmed:true,scheme:"Cheyutha Pension",src:"Telangana Social Welfare Dept, 2025"},
+  {s:"Haryana",a:3000,confirmed:true,scheme:"Old Age Samman Allowance",src:"socialjusticehry.gov.in, w.e.f. 1 Jan 2024"},
+  {s:"Delhi",a:2500,confirmed:false,scheme:"Old Age Pension",src:"dssb.delhi.gov.in"},
+  {s:"Goa",a:2500,confirmed:false,scheme:"Social Welfare Pension",src:"Social Welfare Dept, Goa"},
+  {s:"Kerala",a:1600,confirmed:true,scheme:"Kerala Social Security Pension",src:"kottayam.nic.in; Kerala Economic Review 2024"},
+  {s:"Punjab",a:1500,confirmed:false,scheme:"Ashirwad Scheme",src:"Punjab Social Security Dept"},
+  {s:"Uttarakhand",a:1500,confirmed:false,scheme:"Old Age Pension",src:"Uttarakhand Social Welfare Dept"},
+  {s:"Rajasthan",a:1450,confirmed:true,scheme:"RAJSSP",src:"rajssp.raj.nic.in"},
+  {s:"Tamil Nadu",a:1200,confirmed:true,scheme:"TNSSP",src:"cra.tn.gov.in, w.e.f. Aug 2023"},
+  {s:"Karnataka",a:1200,confirmed:false,scheme:"Sandhya Suraksha",src:"swd.karnataka.gov.in"},
+  {s:"Uttar Pradesh",a:1000,confirmed:true,scheme:"Vridhavastha Pension",src:"sspy-up.gov.in, raised Dec 2021"},
+  {s:"West Bengal",a:1000,confirmed:false,scheme:"Old Age Pension",src:"ds.wb.gov.in"},
+  {s:"Gujarat",a:1000,confirmed:false,scheme:"IGNOAPS top-up",src:"Gujarat Social Welfare Dept"},
+  {s:"Jharkhand",a:1000,confirmed:false,scheme:"Old Age Pension",src:"jharkhand.gov.in"},
+  {s:"H.P.",a:1000,confirmed:false,scheme:"Social Security Pension",src:"HP Social Justice Dept"},
+  {s:"Odisha",a:600,confirmed:false,scheme:"Madhu Babu Pension",src:"Odisha Social Security Dept"},
+  {s:"Maharashtra",a:600,confirmed:false,scheme:"Shravan Bal Seva",src:"Maharashtra Social Welfare"},
+  {s:"M.P.",a:600,confirmed:false,scheme:"IGNOAPS top-up",src:"socialsecurity.mp.gov.in"},
+  {s:"Bihar",a:500,confirmed:true,scheme:"Mukhyamantri Vridhjan Pension",src:"sspmis.bihar.gov.in (pre-Jul 2025; raised to Rs1100 from Jul 2025)"},
+  {s:"Chhattisgarh",a:500,confirmed:false,scheme:"IGNOAPS top-up",src:"Chhattisgarh Social Welfare Dept"}
+];
+
+const HEALTH=[
+  {s:"Odisha",b:514,cov:100,scheme:"Gopabandhu Jan Arogya Yojana",launched:2018},
+  {s:"Kerala",b:436,cov:100,scheme:"Karunya Arogya Suraksha Padhathi",launched:2020},
+  {s:"Andhra Pradesh",b:380,cov:100,scheme:"Dr YSR Aarogyasri",launched:2007},
+  {s:"Tamil Nadu",b:345,cov:64,scheme:"CMCHIS",launched:2012},
+  {s:"Telangana",b:290,cov:76,scheme:"Aarogyasri",launched:2014},
+  {s:"Karnataka",b:218,cov:64,scheme:"Arogya Karnataka",launched:2018},
+  {s:"West Bengal",b:178,cov:100,scheme:"Swasthya Sathi",launched:2016},
+  {s:"Himachal Pradesh",b:164,cov:100,scheme:"Him Care",launched:2018},
+  {s:"Assam",b:138,cov:67,scheme:"Atal Amrit Abhiyan",launched:2018},
+  {s:"Punjab",b:122,cov:60,scheme:"Sarbat Sehat Bima Yojana",launched:2019},
+  {s:"Rajasthan",b:112,cov:100,scheme:"Chiranjeevi Yojana",launched:2021},
+  {s:"Maharashtra",b:96,cov:36,scheme:"Mahatma Phule Jan Arogya Yojana",launched:2012},
+  {s:"Gujarat",b:84,cov:42,scheme:"MA Yojana",launched:2012},
+  {s:"Chhattisgarh",b:78,cov:100,scheme:"Dr Khubchand Baghel Health Scheme",launched:2020},
+  {s:"Madhya Pradesh",b:62,cov:59,scheme:"PMJAY only",launched:2018},
+  {s:"Haryana",b:54,cov:58,scheme:"Chirayu Haryana",launched:2022},
+  {s:"Jharkhand",b:42,cov:100,scheme:"Mukhyamantri Swasthya Bima Yojana",launched:2021},
+  {s:"Bihar",b:18,cov:0,scheme:"PMJAY only (MMJAY launching)",launched:2024},
+  {s:"Uttar Pradesh",b:11,cov:43,scheme:"PMJAY only",launched:2018}
+];
+
+const MGN=[
+  {s:"Haryana",w:374,r:"North"},{s:"Kerala",w:349,r:"South"},{s:"Karnataka",w:349,r:"South"},
+  {s:"Punjab",w:303,r:"North"},{s:"Andhra Pradesh",w:300,r:"South"},{s:"Telangana",w:300,r:"South"},
+  {s:"Tamil Nadu",w:294,r:"South"},{s:"Maharashtra",w:284,r:"West"},{s:"Gujarat",w:280,r:"West"},
+  {s:"Himachal Pradesh",w:266,r:"North"},{s:"Rajasthan",w:266,r:"North"},{s:"West Bengal",w:250,r:"East"},
+  {s:"Bihar",w:245,r:"East"},{s:"Odisha",w:243,r:"East"},{s:"Madhya Pradesh",w:243,r:"Central"},
+  {s:"Chhattisgarh",w:243,r:"Central"},{s:"Assam",w:238,r:"NE"},{s:"Uttarakhand",w:230,r:"North"},
+  {s:"Uttar Pradesh",w:237,r:"North"},{s:"Jharkhand",w:237,r:"East"}
+];
+
+const REGION_COLOR={South:"rgba(29,158,117,.75)",North:"rgba(55,138,221,.75)",East:"rgba(186,117,23,.75)",West:"rgba(211,84,126,.75)",Central:"rgba(83,74,183,.75)",NE:"rgba(100,130,200,.75)"};
+
+let charts={};
+
+// ── TAB SWITCH ────────────────────────────────────────────────
+function switchTab(id){
+  ["charts","readme","commits"].forEach(t=>{
+    document.getElementById("panel-"+t).classList.toggle("active",t===id);
+    document.getElementById("tab-"+t).classList.toggle("active",t===id);
+  });
+}
+
+// ── SORT HELPERS ──────────────────────────────────────────────
+function setActive(groupId,btn){
+  document.querySelectorAll("#"+groupId+" .sort-btn").forEach(b=>b.classList.remove("active"));
+  btn.classList.add("active");
+}
+
+// ── PENSION CHART ─────────────────────────────────────────────
+function buildPension(mode){
+  let d=[...PENSIONS];
+  if(mode==="desc")d.sort((a,b)=>b.a-a.a);
+  else if(mode==="asc")d.sort((a,b)=>a.a-b.a);
+  else d.sort((a,b)=>a.s.localeCompare(b.s));
+  if(charts.p)charts.p.destroy();
+  charts.p=new Chart(document.getElementById("cP").getContext("2d"),{
+    type:"bar",
+    data:{
+      labels:d.map(r=>r.s),
+      datasets:[{
+        data:d.map(r=>r.a),
+        backgroundColor:d.map(r=>r.a>=1622?"rgba(29,158,117,.75)":"rgba(55,138,221,.75)"),
+        borderColor:d.map(r=>r.a>=1622?"#0F6E56":"#185FA5"),
+        borderWidth:.5,borderRadius:3
+      }]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{
+        legend:{display:false},
+        tooltip:{callbacks:{
+          title:c=>c[0].label,
+          label:c=>"₹"+c.raw.toLocaleString()+"/month",
+          afterLabel:c=>{
+            const r=d[c.dataIndex];
+            return[Math.round(c.raw/1622*100)+"% of poverty line","Scheme: "+r.scheme,"Source: "+r.src,r.confirmed?"✓ Confirmed official":"~ Cross-verified"];
+          }
+        }}
+      },
+      scales:{
+        x:{ticks:{font:{size:9},maxRotation:50,minRotation:50,autoSkip:false},grid:{display:false}},
+        y:{min:0,max:4500,ticks:{font:{size:11},callback:v=>"₹"+v.toLocaleString()},grid:{color:"rgba(0,0,0,.06)"}}
+      }
+    },
+    plugins:[{id:"pline",afterDraw(ch){
+      const{ctx,scales:{x,y},chartArea:ca}=ch;
+      const py=y.getPixelForValue(1622);
+      ctx.save();ctx.beginPath();ctx.strokeStyle="#D85A30";ctx.lineWidth=1.5;ctx.setLineDash([5,3]);
+      ctx.moveTo(ca.left,py);ctx.lineTo(ca.right,py);ctx.stroke();ctx.setLineDash([]);
+      ctx.fillStyle="#D85A30";ctx.font="10px sans-serif";ctx.textAlign="right";
+      ctx.fillText("Poverty line ₹1,622",ca.right-4,py-5);ctx.restore();
+    }}]
+  });
+}
+function sortPension(m,b){setActive("p-sorts",b);buildPension(m);}
+
+// ── HEALTH CHART ──────────────────────────────────────────────
+function buildHealth(mode){
+  let d=[...HEALTH];
+  if(mode==="budget")d.sort((a,b)=>b.b-a.b);else d.sort((a,b)=>b.cov-a.cov);
+  if(charts.h)charts.h.destroy();
+  charts.h=new Chart(document.getElementById("cH").getContext("2d"),{
+    type:"bar",
+    data:{
+      labels:d.map(r=>r.s),
+      datasets:[{data:d.map(r=>r.b),backgroundColor:"rgba(83,74,183,.7)",borderColor:"#3C3489",borderWidth:.5,borderRadius:3}]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{
+        legend:{display:false},
+        tooltip:{callbacks:{
+          title:c=>c[0].label,
+          label:c=>"₹"+c.raw+" per capita (SHIP budget)",
+          afterLabel:c=>{const r=d[c.dataIndex];return["Coverage: "+(r.cov>0?r.cov+"% of population":"n/a"),"Scheme: "+r.scheme,"Launched: "+r.launched];}
+        }}
+      },
+      scales:{
+        x:{ticks:{font:{size:9},maxRotation:50,minRotation:50,autoSkip:false},grid:{display:false}},
+        y:{ticks:{font:{size:11},callback:v=>"₹"+v},grid:{color:"rgba(0,0,0,.06)"}}
+      }
+    },
+    plugins:[{id:"hline",afterDraw(ch){
+      const{ctx,scales:{x,y},chartArea:ca}=ch;
+      const py=y.getPixelForValue(200);
+      if(py<ca.top||py>ca.bottom)return;
+      ctx.save();ctx.beginPath();ctx.strokeStyle="#BA7517";ctx.lineWidth=1.5;ctx.setLineDash([5,3]);
+      ctx.moveTo(ca.left,py);ctx.lineTo(ca.right,py);ctx.stroke();ctx.setLineDash([]);
+      ctx.fillStyle="#BA7517";ctx.font="10px sans-serif";ctx.textAlign="right";
+      ctx.fillText("PMJAY per-capita ~₹200",ca.right-4,py-5);ctx.restore();
+    }}]
+  });
+}
+function sortHealth(m,b){setActive("h-sorts",b);buildHealth(m);}
+
+// ── MGNREGS CHART ─────────────────────────────────────────────
+function buildMgn(mode){
+  let d=[...MGN];
+  if(mode==="desc")d.sort((a,b)=>b.w-a.w);else d.sort((a,b)=>a.w-b.w);
+  if(charts.m)charts.m.destroy();
+  charts.m=new Chart(document.getElementById("cM").getContext("2d"),{
+    type:"bar",
+    data:{
+      labels:d.map(r=>r.s),
+      datasets:[{
+        data:d.map(r=>r.w),
+        backgroundColor:d.map(r=>REGION_COLOR[r.r]||"rgba(100,100,100,.7)"),
+        borderWidth:.5,borderRadius:3
+      }]
+    },
+    options:{
+      responsive:true,maintainAspectRatio:false,
+      plugins:{
+        legend:{display:false},
+        tooltip:{callbacks:{
+          title:c=>c[0].label,
+          label:c=>"₹"+c.raw+"/day (MGNREGS wage)",
+          afterLabel:c=>{const r=d[c.dataIndex];const diff=c.raw-289;return["Region: "+r.r,(diff>=0?"+":"")+diff+" vs national average ₹289"];}
+        }}
+      },
+      scales:{
+        x:{ticks:{font:{size:9},maxRotation:50,minRotation:50,autoSkip:false},grid:{display:false}},
+        y:{min:200,ticks:{font:{size:11},callback:v=>"₹"+v},grid:{color:"rgba(0,0,0,.06)"}}
+      }
+    },
+    plugins:[{id:"mavg",afterDraw(ch){
+      const{ctx,scales:{x,y},chartArea:ca}=ch;
+      const py=y.getPixelForValue(289);
+      ctx.save();ctx.beginPath();ctx.strokeStyle="#993C1D";ctx.lineWidth=1.5;ctx.setLineDash([5,3]);
+      ctx.moveTo(ca.left,py);ctx.lineTo(ca.right,py);ctx.stroke();ctx.setLineDash([]);
+      ctx.fillStyle="#993C1D";ctx.font="10px sans-serif";ctx.textAlign="right";
+      ctx.fillText("National avg ₹289",ca.right-4,py-5);ctx.restore();
+    }}]
+  });
+}
+function sortMgn(m,b){setActive("m-sorts",b);buildMgn(m);}
+
+// ── INIT ──────────────────────────────────────────────────────
+buildPension("desc");
+buildHealth("budget");
+buildMgn("desc");
+</script>
 </body>
 </html>

@@ -1,0 +1,23 @@
+[
+  {"state":"Andhra Pradesh","amount":4000,"confirmed":true,"scheme":"NTR Bharosa","source":"G.O.Ms.No.43, 13 Jun 2024, navasakam.ap.gov.in"},
+  {"state":"Telangana","amount":4000,"confirmed":true,"scheme":"Cheyutha Pension","source":"Telangana Social Welfare Dept, 2025"},
+  {"state":"Haryana","amount":3000,"confirmed":true,"scheme":"Old Age Samman Allowance","source":"socialjusticehry.gov.in, w.e.f. 1 Jan 2024"},
+  {"state":"Delhi","amount":2500,"confirmed":false,"scheme":"Old Age Pension","source":"dssb.delhi.gov.in"},
+  {"state":"Goa","amount":2500,"confirmed":false,"scheme":"Social Welfare Pension","source":"Social Welfare Dept, Goa"},
+  {"state":"Kerala","amount":1600,"confirmed":true,"scheme":"Kerala Social Security Pension","source":"kottayam.nic.in; Kerala Economic Review 2024"},
+  {"state":"Punjab","amount":1500,"confirmed":false,"scheme":"Ashirwad Scheme","source":"Punjab Social Security Dept"},
+  {"state":"Uttarakhand","amount":1500,"confirmed":false,"scheme":"Old Age Pension","source":"Uttarakhand Social Welfare Dept"},
+  {"state":"Rajasthan","amount":1450,"confirmed":true,"scheme":"RAJSSP","source":"rajssp.raj.nic.in"},
+  {"state":"Tamil Nadu","amount":1200,"confirmed":true,"scheme":"TNSSP","source":"cra.tn.gov.in, w.e.f. Aug 2023"},
+  {"state":"Karnataka","amount":1200,"confirmed":false,"scheme":"Sandhya Suraksha","source":"swd.karnataka.gov.in"},
+  {"state":"Uttar Pradesh","amount":1000,"confirmed":true,"scheme":"Vridhavastha Pension","source":"sspy-up.gov.in, raised Dec 2021"},
+  {"state":"West Bengal","amount":1000,"confirmed":false,"scheme":"Old Age Pension","source":"ds.wb.gov.in"},
+  {"state":"Gujarat","amount":1000,"confirmed":false,"scheme":"IGNOAPS top-up","source":"Gujarat Social Welfare Dept"},
+  {"state":"Jharkhand","amount":1000,"confirmed":false,"scheme":"Old Age Pension","source":"jharkhand.gov.in"},
+  {"state":"Himachal Pradesh","amount":1000,"confirmed":false,"scheme":"Social Security Pension","source":"HP Social Justice Dept"},
+  {"state":"Odisha","amount":600,"confirmed":false,"scheme":"Madhu Babu Pension","source":"Odisha Social Security Dept"},
+  {"state":"Maharashtra","amount":600,"confirmed":false,"scheme":"Shravan Bal Seva","source":"Maharashtra Social Welfare"},
+  {"state":"Madhya Pradesh","amount":600,"confirmed":false,"scheme":"IGNOAPS top-up","source":"socialsecurity.mp.gov.in"},
+  {"state":"Bihar","amount":500,"confirmed":true,"scheme":"Mukhyamantri Vridhjan Pension","source":"sspmis.bihar.gov.in (pre-Jul 2025; raised to Rs 1,100 from Jul 2025)"},
+  {"state":"Chhattisgarh","amount":500,"confirmed":false,"scheme":"IGNOAPS top-up","source":"Chhattisgarh Social Welfare Dept"}
+]
